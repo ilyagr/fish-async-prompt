@@ -22,7 +22,7 @@ end
 not set -q async_prompt_on_variable
 and set async_prompt_on_variable fish_bind_mode PWD
 function __async_prompt_fire --on-event fish_prompt (for var in $async_prompt_on_variable; printf '%s\n' --on-variable $var; end)
-    set -l __async_prompt_last_pipestatus $pipestatus
+    set -l __async_prompt_last_pipestatus $ilya_pipestatus
     if test "$async_prompt_enable" = 0
         if not test "$__async_prompt_config_functions_were_reset" = 1
             # Erase the event handlers. Note that `async_prompt_enable` can be set to 0 *after* this function
@@ -168,6 +168,7 @@ function __async_prompt_config_inherit_variables
         echo pipestatus
         echo SHLVL
         echo status
+        echo ilya_pipestatus
     end
 end
 

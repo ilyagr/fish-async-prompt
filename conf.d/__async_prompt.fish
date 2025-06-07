@@ -19,13 +19,10 @@ function __async_prompt_setup_on_startup --on-event fish_prompt
     end
 end
 
-function __async_prompt_keep_last_pipestatus
-    set -g __async_prompt_last_pipestatus $pipestatus
-end
-
 not set -q async_prompt_on_variable
 and set async_prompt_on_variable fish_bind_mode PWD
 function __async_prompt_fire --on-event fish_prompt (for var in $async_prompt_on_variable; printf '%s\n' --on-variable $var; end)
+    set -l __async_prompt_last_pipestatus $pipestatus
     if test "$async_prompt_enable" = 0
         if not test "$__async_prompt_config_functions_were_reset" = 1
             # Erase the event handlers. Note that `async_prompt_enable` can be set to 0 *after* this function
@@ -48,7 +45,7 @@ function __async_prompt_fire --on-event fish_prompt (for var in $async_prompt_on
             eval (string escape -- $func'_loading_indicator' "$last_prompt") >$tmpfile
         end
 
-        __async_prompt_config_inherit_variables | __async_prompt_spawn \
+        __async_prompt_config_inherit_variables | __async_prompt_last_pipestatus=$__async_prompt_last_pipestatus __async_prompt_spawn \
             $func' | read -z prompt
             echo -n $prompt >'$tmpfile
     end
